@@ -11,6 +11,13 @@ const SinglePost = () => {
         voluptatem explicabo. Consectetur, harum fugit.
       </div>
       <PostActions />
+      <div className="bg-blue-100 flex flex-col gap-4 p-8 h-[150px] overflow-auto scrollbar-hide rounded-md">
+        <div className="bg-white shadow-md p-4 rounded-md text-sm">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam
+          exercitationem quaerat modi porro iure a aperiam facilis harum
+          asperiores corrupti!
+        </div>
+      </div>
     </div>
   );
 };
