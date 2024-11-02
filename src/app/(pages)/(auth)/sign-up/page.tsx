@@ -1,11 +1,41 @@
+"use client";
+
 import { ProgressLink } from "@/components/nprogress/NProgressHandler";
-import React from "react";
+import { userRegister } from "@/actions/authActions";
+import { useActionState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const SignUpPage = () => {
+  const router = useRouter();
+  const [formState, formAction, isLoading] = useActionState(userRegister, {
+    success: false,
+    error: null,
+  });
+
+  if (formState?.error) {
+    toast.error(formState.error);
+    console.error(formState.error);
+  }
+
+  if (formState?.success) {
+    toast.success("User registered successfully");
+    router.push("/sign-in");
+  }
+
+  const handleAction = async (formdata: FormData) => {
+    formAction(formdata);
+  };
+
   return (
-    <form className="flex flex-col shadow-md rounded-md items-center justify-center gap-8 p-4 w-[30%] border border-blue-400">
+    <form
+      className="flex flex-col shadow-md rounded-md items-center justify-center gap-8 p-4 w-[30%] border border-blue-400"
+      action={handleAction}
+    >
       <input
         type="email"
+        name="reg-email"
+        id="reg-email"
         placeholder="Email"
         required
         className="p-2 border border-gray-300 rounded w-full"
@@ -13,11 +43,13 @@ const SignUpPage = () => {
       <input
         type="password"
         placeholder="Password"
+        id="reg-password"
+        name="reg-password"
         required
         className="p-2 border border-gray-300 rounded w-full"
       />
       <button className="flex items-center justify-center px-4 py-2 border-none outline-none bg-blue-100 rounded-md">
-        Sign Up
+        {isLoading ? "Loading..." : "Sign Up"}
       </button>
       <div className="w-full flex items-center justify-center gap-4">
         <span>Already have an account?</span>
