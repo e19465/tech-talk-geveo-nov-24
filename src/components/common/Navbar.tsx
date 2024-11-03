@@ -1,10 +1,8 @@
-import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { ProgressLink } from "../nprogress/NProgressHandler";
+import ProfileLink from "./ProfileLink";
 
 const Navbar = () => {
-  const userId = "1";
   return (
     <nav className="bg-white border-b border-b-blue-500 h-[70px]">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -23,12 +21,7 @@ const Navbar = () => {
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                <ProgressLink
-                  href={`/profile/${userId}`}
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-800 bg-blue-100"
-                >
-                  Profile
-                </ProgressLink>
+                <ProfileLink />
               </div>
             </div>
           </div>
