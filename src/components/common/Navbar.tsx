@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ProgressLink } from "../nprogress/NProgressHandler";
 import ProfileLink from "./ProfileLink";
+import LogoutButton from "./LogoutButton";
 
 const Navbar = () => {
   return (
@@ -19,9 +20,12 @@ const Navbar = () => {
                 />
               </ProgressLink>
             </div>
-            <div className="hidden sm:ml-6 sm:block">
+            <div className="flex gap-2 mx-4">
               <div className="flex space-x-4">
                 <ProfileLink />
+              </div>
+              <div className="flex space-x-4">
+                <LogoutButton />
               </div>
             </div>
           </div>

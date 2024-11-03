@@ -1,10 +1,12 @@
 "use client";
 
 import { createPost } from "@/actions/postActions";
+import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { toast } from "react-toastify";
 
 const CreatePost = () => {
+  const router = useRouter();
   const [formState, formAction, isLoading] = useActionState(createPost, {
     success: false,
     error: null,
@@ -32,7 +34,7 @@ const CreatePost = () => {
 
   if (formState?.success && formState.post) {
     toast.success("Post created successfully");
-    console.log(formState.post);
+    router.refresh();
   }
 
   return (

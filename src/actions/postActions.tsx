@@ -38,3 +38,30 @@ export const createPost = async (
     };
   }
 };
+
+export const getAllPosts = async () => {
+  try {
+    const posts = await prisma.post.findMany();
+    console.log("posts", posts);
+    return posts;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const getLoggedInUserPosts = async (userId: string | null) => {
+  if (!userId) {
+    return null;
+  }
+
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        authorId: userId,
+      },
+    });
+    return posts;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
