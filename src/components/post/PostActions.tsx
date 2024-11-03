@@ -3,19 +3,63 @@
 import Image from "next/image";
 import LIKED_IMAGE from "../../../public/liked.png";
 import LIKE_IMAGE from "../../../public/like.png";
-import { useState } from "react";
+import { startTransition, useOptimistic, useState } from "react";
+import { PostWithLikesAndComments } from "@/lib/types";
+import { toggleLike } from "@/actions/postActions";
 
-const PostActions = () => {
-  const [imgSrc, setImageSrc] = useState(LIKE_IMAGE);
-  const [likes, setLikes] = useState(0);
+const PostActions = ({ post }: { post: PostWithLikesAndComments }) => {
+  const isLiked = post.likes.find((like) => like.authorId === post.authorId);
+  const likeCount = post.likes.length;
+  const [imgSrc, setImageSrc] = useState(isLiked ? LIKED_IMAGE : LIKE_IMAGE);
 
-  const handleLikeClick = () => {
+  // react state to keep track of likes
+  const [likeAndLikeCount, setLikeAndLikeCount] = useState<any>({
+    isLiked: isLiked,
+    likeCount: likeCount,
+  });
+
+  // opsitimistic UI update for likes
+  const [opstimisticLikesState, setOptimisticLikesState] = useOptimistic(
+    likeAndLikeCount,
+    (prev: any) => {
+      return {
+        ...prev,
+        isLiked: !prev.isLiked,
+        likeCount: prev.isLiked ? prev.likeCount - 1 : prev.likeCount + 1,
+      };
+    }
+  );
+
+  const toggleLikeImage = () => {
     if (imgSrc === LIKE_IMAGE) {
-      setLikes((prevLikes) => prevLikes + 1);
       setImageSrc(LIKED_IMAGE);
     } else {
-      setLikes((prevLikes) => prevLikes - 1);
       setImageSrc(LIKE_IMAGE);
+    }
+  };
+
+  const handleLikeClick = async () => {
+    try {
+      startTransition(() => {
+        setOptimisticLikesState("");
+      });
+      const res = await toggleLike(post.id, post.authorId);
+      if (res) {
+        toggleLikeImage();
+        if (res === "liked") {
+          setLikeAndLikeCount((prev: any) => ({
+            isLiked: true,
+            likeCount: prev.likeCount + 1, // increment like count
+          }));
+        } else {
+          setLikeAndLikeCount((prev: any) => ({
+            isLiked: false,
+            likeCount: prev.likeCount - 1, // decrement like count
+          }));
+        }
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -33,7 +77,7 @@ const PostActions = () => {
             />
           </div>
           <div className="">
-            <span>{likes}</span>
+            <span>{opstimisticLikesState.likeCount}</span>
           </div>
         </div>
         <div className="w-full flex gap-2">

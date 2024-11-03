@@ -41,8 +41,12 @@ export const createPost = async (
 
 export const getAllPosts = async () => {
   try {
-    const posts = await prisma.post.findMany();
-    console.log("posts", posts);
+    const posts = await prisma.post.findMany({
+      include: {
+        likes: true,
+        comments: true,
+      },
+    });
     return posts;
   } catch (err: any) {
     throw new Error(err);
@@ -59,8 +63,51 @@ export const getLoggedInUserPosts = async (userId: string | null) => {
       where: {
         authorId: userId,
       },
+      include: {
+        likes: true,
+        comments: true,
+      },
     });
     return posts;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const toggleLike = async (
+  postId: string | null,
+  userId: string | null
+) => {
+  if (!userId || !postId) {
+    throw new Error("You need to be logged in to like a post");
+  }
+
+  try {
+    // if like already found, then delete it
+    const foundLike = await prisma.like.findFirst({
+      where: {
+        authorId: userId,
+        postId: postId,
+      },
+    });
+
+    if (foundLike) {
+      await prisma.like.delete({
+        where: {
+          id: foundLike.id,
+        },
+      });
+      return "unliked";
+    } else {
+      // else create a new like
+      await prisma.like.create({
+        data: {
+          authorId: userId,
+          postId: postId,
+        },
+      });
+      return "liked";
+    }
   } catch (err: any) {
     throw new Error(err);
   }

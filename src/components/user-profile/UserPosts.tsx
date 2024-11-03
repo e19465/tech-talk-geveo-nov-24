@@ -1,14 +1,6 @@
 import { getLoggedInUserPosts } from "@/actions/postActions";
 import SinglePost from "../post/SinglePost";
-
-type PostProps = {
-  id: string;
-  title: string;
-  content: string;
-  authorId: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import { PostWithLikesAndComments } from "@/lib/types";
 
 const UserPosts = async ({ userId }: { userId?: any }) => {
   const userPosts = await getLoggedInUserPosts(userId);
@@ -25,7 +17,7 @@ const UserPosts = async ({ userId }: { userId?: any }) => {
   return (
     <div className="px-8 py-20 flex flex-col items-center justify-center gap-8">
       <h1 className="text-center text-2xl">My Posts</h1>
-      {userPosts.map((post: PostProps) => (
+      {userPosts.map((post: PostWithLikesAndComments) => (
         <SinglePost key={post.id} post={post} />
       ))}
     </div>
