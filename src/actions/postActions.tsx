@@ -112,3 +112,64 @@ export const toggleLike = async (
     throw new Error(err);
   }
 };
+
+export const addComment = async (
+  postId: string | null,
+  userId: string | null,
+  comment: string
+) => {
+  if (!userId || !postId) {
+    throw new Error("You need to be logged in to comment on a post");
+  }
+
+  try {
+    const newComment = await prisma.comment.create({
+      data: {
+        content: comment,
+        authorId: userId,
+        postId: postId,
+      },
+    });
+    return newComment;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const deleteComment = async (
+  commentId: string | null,
+  userId: string | null
+) => {
+  if (!userId || !commentId) {
+    throw new Error("You need to be logged in to delete a comment");
+  }
+
+  try {
+    // check if comment exists
+    const foundComment = await prisma.comment.findFirst({
+      where: {
+        id: commentId,
+      },
+    });
+    if (!foundComment) {
+      throw new Error("Comment not found");
+    }
+
+    // check if user is allowed to delete the comment
+    const isAllowedToDelete = foundComment.authorId === userId;
+    if (!isAllowedToDelete) {
+      throw new Error("You are not allowed to delete this comment");
+    }
+
+    // delete the comment
+    await prisma.comment.delete({
+      where: {
+        id: commentId,
+      },
+    });
+
+    return true;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
