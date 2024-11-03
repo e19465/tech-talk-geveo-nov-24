@@ -3,6 +3,9 @@ import SinglePost from "../post/SinglePost";
 import { PostWithLikesAndComments } from "@/lib/types";
 
 const UserPosts = async ({ userId }: { userId?: any }) => {
+  if (!userId) {
+    return null;
+  }
   const userPosts = await getLoggedInUserPosts(userId);
   // await new Promise((resolve) => setTimeout(resolve, 4000));
 

@@ -67,3 +67,17 @@ export const userLogin = async (
     };
   }
 };
+
+export const isUserExists = async (userId: string) => {
+  if (!userId) return false;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    return !!user;
+  } catch (err: any) {
+    return false;
+  }
+};

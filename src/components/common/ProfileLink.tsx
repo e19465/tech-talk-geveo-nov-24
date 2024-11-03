@@ -21,7 +21,7 @@ const ProfileLink = () => {
   return (
     <ProgressLink
       href={`/profile/${userId}`}
-      className="rounded-md px-3 py-2 text-sm font-medium text-gray-800 bg-blue-100 border border-blue-900"
+      className="rounded-md px-3 py-2 text-sm font-medium text-gray-800 bg-blue-100 border border-blue-900 flex items-center justify-center"
     >
       Profile
     </ProgressLink>

@@ -12,11 +12,11 @@ const Navbar = () => {
             <div className="flex flex-shrink-0 items-center">
               <ProgressLink href="/">
                 <Image
-                  className="h-8 w-auto"
-                  src="https://th.bing.com/th/id/R.99d34c78d03140bd605afd14dca01ed6?rik=nmkpUJtDFIXb1A&pid=ImgRaw&r=0"
+                  src="/geveo-logo.png"
                   alt="Your Company"
-                  width={32}
-                  height={32}
+                  width={100}
+                  height={100}
+                  className="w-[100px] h-auto object-contain"
                 />
               </ProgressLink>
             </div>
