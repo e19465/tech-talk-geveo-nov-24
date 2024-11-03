@@ -13,9 +13,9 @@ const SignUpPage = () => {
     error: null,
   });
 
-  if (formState?.error) {
+  if (formState?.error && !isLoading) {
+    console.log(formState.error);
     toast.error(formState.error);
-    console.error(formState.error);
   }
 
   if (formState?.success) {
@@ -23,14 +23,17 @@ const SignUpPage = () => {
     router.push("/sign-in");
   }
 
-  const handleAction = async (formdata: FormData) => {
-    formAction(formdata);
+  // Handle form submission
+  const handleAction = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    formAction(formData);
   };
 
   return (
     <form
       className="flex flex-col shadow-md rounded-md items-center justify-center gap-8 p-4 w-[30%] border border-blue-400"
-      action={handleAction}
+      onSubmit={handleAction}
     >
       <input
         type="email"
@@ -48,7 +51,11 @@ const SignUpPage = () => {
         required
         className="p-2 border border-gray-300 rounded w-full"
       />
-      <button className="flex items-center justify-center px-4 py-2 border-none outline-none bg-blue-100 rounded-md">
+      <button
+        className="flex items-center justify-center px-4 py-2 border-none outline-none bg-blue-100 rounded-md"
+        disabled={isLoading}
+        type="submit"
+      >
         {isLoading ? "Loading..." : "Sign Up"}
       </button>
       <div className="w-full flex items-center justify-center gap-4">

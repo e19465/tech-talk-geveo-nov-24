@@ -20,16 +20,9 @@ const CreatePost = () => {
     },
   });
 
-  const handleAction = async (formdata: FormData) => {
-    formAction({
-      formData: formdata,
-      userId: localStorage.getItem("user_id"),
-    });
-  };
-
   if (formState?.error) {
+    console.log(formState.error);
     toast.error(formState.error);
-    console.error(formState.error);
   }
 
   if (formState?.success && formState.post) {
@@ -37,11 +30,21 @@ const CreatePost = () => {
     router.refresh();
   }
 
+  // Handle form submission
+  const handleAction = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formdata = new FormData(event.currentTarget);
+    formAction({
+      formData: formdata,
+      userId: localStorage.getItem("user_id"),
+    });
+  };
+
   return (
     <div className="flex justify-center items-center bg-gray-100 w-full">
       <form
         className="bg-white p-6 rounded-lg shadow-lg w-[70%]"
-        action={handleAction}
+        onSubmit={handleAction}
       >
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">
           Create a New Post
@@ -65,7 +68,11 @@ const CreatePost = () => {
         </div>
 
         <div className="flex items-center justify-end w-full">
-          <button className="w-[300px] bg-blue-900 text-white font-semibold py-2 rounded-lg hover:bg-blue-800 transition-colors duration-200">
+          <button
+            className="w-[300px] bg-blue-900 text-white font-semibold py-2 rounded-lg hover:bg-blue-800 transition-colors duration-200"
+            type="submit"
+            disabled={isLoading}
+          >
             {isLoading ? "Loading..." : "Create Post"}
           </button>
         </div>
