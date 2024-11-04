@@ -3,7 +3,7 @@
 import Image from "next/image";
 import LIKED_IMAGE from "../../../public/liked.png";
 import LIKE_IMAGE from "../../../public/like.png";
-import { startTransition, useOptimistic, useState } from "react";
+import { startTransition, useEffect, useOptimistic, useState } from "react";
 import { PostWithLikesAndComments } from "@/lib/types";
 import { addComment, toggleLike } from "@/actions/postActions";
 import SingleComment from "./SingleComment";
@@ -11,10 +11,20 @@ import { Comment } from "@prisma/client";
 import { toast } from "react-toastify";
 
 const PostActions = ({ post }: { post: PostWithLikesAndComments }) => {
-  const isLiked = post.likes.find((like) => like.authorId === post.authorId);
+  const [userId, setUserId] = useState<string>("");
+  const isLiked = post.likes.find((like) => like.authorId === userId);
   const likeCount = post.likes.length;
   const [imgSrc, setImageSrc] = useState(isLiked ? LIKED_IMAGE : LIKE_IMAGE);
   const [newComment, setNewComment] = useState<string>("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const user_id = localStorage.getItem("user_id");
+      if (user_id) {
+        setUserId(user_id);
+      }
+    }
+  }, [post]);
 
   // react state to keep track of likes
   const [likeAndLikeCount, setLikeAndLikeCount] = useState<any>({

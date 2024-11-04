@@ -41,6 +41,7 @@ export const createPost = async (
 
 export const getAllPosts = async () => {
   try {
+    // throw new Error("Not implemented");
     const posts = await prisma.post.findMany({
       include: {
         likes: true,
